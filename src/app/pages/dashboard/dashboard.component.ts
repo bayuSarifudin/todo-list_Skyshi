@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from 'src/app/services/activity.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalPopupComponent } from 'src/app/component/modal-popup/modal-popup.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,7 +9,10 @@ import { ActivityService } from 'src/app/services/activity.service';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private activityService: ActivityService) {}
+  constructor(
+    private activityService: ActivityService,
+    private dialogRef: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.getAllActivities();
@@ -42,25 +47,27 @@ export class DashboardComponent implements OnInit {
     this.showAlert = !this.showAlert;
   };
 
-  deleteTitle: string = '';
-  deleteId: string = '';
-  activateModal = (id: string) => {
-    this.setShowDialog();
+  activateModal = (id: string): void => {
     this.activityService.getActivity(id).subscribe((res) => {
-      this.deleteTitle = res.id;
-      this.deleteTitle = res.title;
-      return this.deleteId;
+      const deleteActivity = this.dialogRef.open(ModalPopupComponent, {
+        data: {
+          title: res.title,
+          id: res.id,
+          message: 'Apakah anda yakin menghapus activity',
+        },
+      });
+
+      deleteActivity.afterClosed().subscribe(() => {
+        this.activityService
+          .deleteActivity(res.id)
+          .subscribe(() => this.getAllActivities());
+        this.setShowAlert();
+      });
     });
   };
 
   handleDelete = () => {
-    if (this.deleteId) {
-      this.activityService.deleteActivity(this.deleteId).subscribe((res) => {
-        this.getAllActivities();
-      });
-
-      console.log('first');
-    }
+    console.log('first');
 
     this.setShowDialog();
     this.setShowAlert();
