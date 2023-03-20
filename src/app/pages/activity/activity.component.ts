@@ -3,6 +3,7 @@ import { ActivityService } from 'src/app/services/activity.service';
 import { TodoService } from 'src/app/services/todo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { ModalPopupComponent } from 'src/app/component/modal-popup/modal-popup.component';
 
 @Component({
@@ -58,19 +59,52 @@ export class ActivityComponent implements OnInit {
     });
   };
 
+  showForm: boolean = false;
+  setShowForm = () => {
+    this.showForm = !this.showForm;
+  };
+
   todoName: string = '';
   priority: any | string;
 
+  selectPriority = [
+    { type: 'Very High', color: 'bg-primary-red' },
+    { type: 'High', color: 'bg-orange-400' },
+    { type: 'Medium', color: 'bg-green-500' },
+    { type: 'Low', color: 'bg-blue-600' },
+    { type: 'Very Low', color: 'bg-purple-700' },
+  ];
+
   createTodo = () => {
     const data = {
-      title: 'activitas baru',
+      title: this.todoName,
       activity_group_id: this.activityId,
     };
 
-    this.todoService.createTodo(data).subscribe({
-      next: (res) => {
-        this.getAllTodo();
-      },
+    if (this.todoName.length) {
+      this.todoService.createTodo(data).subscribe({
+        next: (res) => {
+          this.getAllTodo();
+        },
+      });
+    }
+
+    this.setShowForm();
+  };
+
+  activateModal = (id: string): void => {
+    this.todoService.getTodoList(id).subscribe((res) => {
+      const deleteActivity = this.dialogRef.open(ModalPopupComponent, {
+        data: {
+          title: res.title,
+          id: res.id,
+          message: 'Apakah anda yakin menghapus list item',
+        },
+      });
+
+      deleteActivity.afterClosed().subscribe(() => {
+        this.todoService.deleteTodo(res.id).subscribe(() => this.getAllTodo());
+      });
     });
   };
 }

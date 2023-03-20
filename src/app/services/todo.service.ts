@@ -15,7 +15,15 @@ export class TodoService {
     );
   }
 
+  getTodoList(id: string): Observable<any> {
+    return this.httpClient.get(environment.apiUrl + '/todo-items/' + id);
+  }
+
   createTodo(data: any): Observable<any> {
     return this.httpClient.post(environment.apiUrl + '/todo-items', data);
+  }
+
+  deleteTodo(id: string): Observable<any> {
+    return this.httpClient.delete(environment.apiUrl + '/todo-items/' + id);
   }
 }
