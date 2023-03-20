@@ -26,4 +26,11 @@ export class ActivityService {
       environment.apiUrl + '/activity-groups/' + id
     );
   }
+
+  updateActivity(id: string, data: any): Observable<any> {
+    return this.httpClient.patch(
+      environment.apiUrl + '/activity-groups/' + id,
+      data
+    );
+  }
 }
