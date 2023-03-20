@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
   }
 
   showDialog: boolean = false;
-  showAlert: boolean = true;
+  showAlert: boolean = false;
   setShowDialog = () => {
     this.showDialog = !this.showDialog;
   };
@@ -42,23 +42,24 @@ export class DashboardComponent implements OnInit {
     this.showAlert = !this.showAlert;
   };
 
+  deleteTitle: string = '';
+  deleteId: string = '';
   activateModal = (id: string) => {
+    this.setShowDialog();
     this.activityService.getActivity(id).subscribe((res) => {
       this.deleteTitle = res.id;
       this.deleteTitle = res.title;
+      return this.deleteId;
     });
-    console.log(this.deleteTitle);
-    this.setShowDialog();
   };
-
-  deleteTitle: string = '';
-  deleteId: string = '';
 
   handleDelete = () => {
     if (this.deleteId) {
       this.activityService.deleteActivity(this.deleteId).subscribe((res) => {
         this.getAllActivities();
       });
+
+      console.log('first');
     }
 
     this.setShowDialog();

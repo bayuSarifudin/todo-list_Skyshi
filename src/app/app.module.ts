@@ -7,6 +7,7 @@ import { ActivityComponent } from './pages/activity/activity.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
     DashboardComponent,
     NavbarComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, NoopAnimationsModule],
   providers: [],
   bootstrap: [AppComponent],
 })
